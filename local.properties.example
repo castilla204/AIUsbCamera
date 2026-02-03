@@ -1,0 +1,10 @@
+# Gemini / provider keys for local Android builds
+# Copy to secrets.properties (preferred) or append to local.properties
+# NEVER commit real values.
+
+GEMINI_API_KEY=
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
+API_KEY_RELAY=
+RELAY_URL_RENDER=
+RELAY_URL_RAILWAY=
