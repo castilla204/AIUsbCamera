@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Anillo exterior -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="
+            M54,22
+            C36.3,22 22,36.3 22,54
+            C22,71.7 36.3,86 54,86
+            C71.7,86 86,71.7 86,54
+            C86,36.3 71.7,22 54,22Z
+
+            M54,32
+            C41.8,32 32,41.8 32,54
+            C32,66.2 41.8,76 54,76
+            C66.2,76 76,66.2 76,54
+            C76,41.8 66.2,32 54,32Z
+        " />
+
+    <!-- Punto central -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M54,46
+            C49.6,46 46,49.6 46,54
+            C46,58.4 49.6,62 54,62
+            C58.4,62 62,58.4 62,54
+            C62,49.6 58.4,46 54,46Z
+        " />
+
+</vector>

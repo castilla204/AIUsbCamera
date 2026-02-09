@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Area del Preview (Fija arriba) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/previewArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#080808"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.example.myapplication.AutoFitSurfaceView
+            android:id="@+id/camera_preview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/status_overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="UVC DISCONNECTED"
+            android:textColor="#00E676"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/overlayCapturando"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#AA000000"
+        android:elevation="100dp"
+        android:gravity="center"
+        android:text="CAPTURANDO..."
+        android:textColor="#FF0000"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/previewArea"
+        app:layout_constraintEnd_toEndOf="@id/previewArea"
+        app:layout_constraintStart_toStartOf="@id/previewArea"
+        app:layout_constraintTop_toTopOf="@id/previewArea" />
+
+    <TextView
+        android:id="@+id/overlayBrazo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#DD000000"
+        android:elevation="200dp"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="⚠ IMAGEN OSCURA\nCICLO SALTADO\n(sin llamar a IA)"
+        android:textColor="#FFDD00"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/previewArea">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnToggleService"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#2E7D32"
+                    android:text="ACTIVAR SISTEMA"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnPocketMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="#424242"
+                    android:text="MODO BOLSILLO"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="#1A1A2E"
+                android:padding="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="DEBUG — Sin modo avión (WiFi/ADB activo)"
+                    android:textColor="#FF6B6B"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchDebugSinAvion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnVibrationTest"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#FF9800"
+                    android:text="PROBAR VIBRACIÓN (X)" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/status_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Estado: Desconectado"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tvParte2Banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="#1A6B00"
+                android:padding="10dp"
+                android:text="PARTE 2 ACTIVA — Diagrama de caso práctico en memoria"
+                android:textColor="#B9F6CA"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <!-- BOTÓN DE PRUEBA: dispara una captura inmediata sin esperar al ciclo
+                 de 4 minutos. Útil para verificar que la API contesta sin perder tiempo. -->
+            <Button
+                android:id="@+id/btnTestCaptureNow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF9800"
+                android:text="📸 TEST: CAPTURAR Y ENVIAR A IA AHORA"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <!-- BOTÓN DE TEST CONTINUO DE VIDEO:
+                 Graba MP4 continuamente con la MISMA pipeline de producción
+                 (cámara hidden, encoder NV12, mismas resolución/fps/bitrate)
+                 pero SIN enviar a IA, sin tocar radios, sin silencio. Guarda
+                 cada MP4 en Movies/UVC_TEST/ (galería). Pensado para validar
+                 el fix del frame gris (stride padding Exynos) viendo logcat
+                 y abriendo los videos. Tag de log: [video-test]. -->
+            <Button
+                android:id="@+id/btnVideoTestLoop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:backgroundTint="#9C27B0"
+                android:text="🎬 TEST CONTINUO DE VIDEO (logcat [video-test])"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="CONFIGURACIÓN DE TIEMPOS Y VIBRACIÓN"
+                android:textColor="#2196F3"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Intensidad (1-255):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderVibrationIntensity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="1.0"
+                    android:valueTo="255.0"
+                    android:stepSize="1.0"
+                    android:value="255.0"
+                    android:contentDescription="Intensidad de vibración" />
+                <TextView android:id="@+id/tvVibrationIntensityValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="255"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Duración Vibración (ms):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderVibrationDuration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="100.0"
+                    android:valueTo="1000.0"
+                    android:stepSize="1.0"
+                    android:value="200.0"
+                    android:contentDescription="Duración de vibración" />
+                <TextView android:id="@+id/tvVibrationDurationValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="200"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Espacio entre pulsos (ms):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderIntraDelay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="100.0"
+                    android:valueTo="1000.0"
+                    android:stepSize="1.0"
+                    android:value="400.0"
+                    android:contentDescription="Espacio entre pulsos" />
+                <TextView android:id="@+id/tvIntraDelayValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="400"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Espacio entre letras (ms):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderInterLetterDelay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="0.0"
+                    android:valueTo="2000.0"
+                    android:stepSize="1.0"
+                    android:value="800.0"
+                    android:contentDescription="Espacio entre letras" />
+                <TextView android:id="@+id/tvInterLetterDelayValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="800"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pre-Vibración Ráfaga (s):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderPreBurstVibrationDelay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="0.0"
+                    android:valueTo="10.0"
+                    android:stepSize="1.0"
+                    android:value="0.0"
+                    android:contentDescription="Retraso de pre-vibración de ráfaga" />
+                <TextView android:id="@+id/tvPreBurstVibrationDelayValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="0"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Retraso inicio bucle (min):" android:textColor="#CCC" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderStartDelayMinutes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:valueFrom="0.0"
+                    android:valueTo="60.0"
+                    android:stepSize="1.0"
+                    android:value="0.0"
+                    android:contentDescription="Retraso de inicio del bucle en minutos (0 = sin retraso)" />
+                <TextView android:id="@+id/tvStartDelayMinutesValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="0"/>
+            </LinearLayout>
+
+            <!-- El slider "Espera avión (IA+revisión, s)" se ELIMINÓ: el tiempo
+                 del ciclo está fijado a 240 s (4 min) — coordinado con el pipeline
+                 server-side (stacking 4 s + Topaz 60 s + 9 OCRs paralelos + 6
+                 analyzers + meta-judge). Cambiarlo en runtime sin recalibrar el
+                 review_timeout del relay rompía la sincronía móvil↔relay. -->
+
+            <!-- ─── PARÁMETROS DE VIDEO ─── -->
+            <!-- El switch BURST/VIDEO fue retirado: el sistema graba SIEMPRE
+                 video MP4 + extrae el mejor frame como foto fallback. El código
+                 del modo BURST permanece en HeadlessUvcService por si en el
+                 futuro se reactiva via AIDL (setCapturePayload). -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="🎥 PARÁMETROS DE VIDEO"
+                android:textColor="#FF9800"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="6dp"
+                android:text="MP4 HEVC corto → OCR remoto + 4 analizadores (Claude+GPT+Gemini+DeepSeek). Además guarda el mejor frame como JPEG en Pictures/BolsilloIA/ como fallback automático si el relay cae."
+                android:textColor="#777"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:id="@+id/layoutVideoParams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:layout_marginTop="6dp"
+                android:background="#1A1A1A"
+                android:padding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Duración video (s):" android:textColor="#CCC" />
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sliderVideoDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:valueFrom="2.0"
+                        android:valueTo="10.0"
+                        android:stepSize="1.0"
+                        android:value="4.0"
+                        android:contentDescription="Duración del MP4 grabado en cada ciclo. Más segundos = video más pesado pero más contexto temporal para OCR." />
+                    <TextView android:id="@+id/tvVideoDurationValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:textColor="#FFF" android:text="4 s"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- API KEYS SECTION (fallback directo si el relay falla) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="🔑 API KEYS (fallback directo)"
+                android:textColor="#2196F3"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:text="Las usa cuando el relay (API Render/Railway) no responde. Backup vacío = sin respaldo."
+                android:textColor="#777"
+                android:textSize="11sp" />
+
+            <!-- RELAY KEY -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Relay Secret Key"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRelayKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ANTHROPIC -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="🟢 Anthropic (Claude)"
+                android:textColor="#3DDC84"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Modelo Claude"
+                android:textColorHint="#888">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etClaudeModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Anthropic API Key (principal)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAnthropicKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Anthropic API Key (respaldo, opcional)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAnthropicKeyBackup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- OPENAI -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="🔵 OpenAI (GPT)"
+                android:textColor="#4D9EFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Modelo OpenAI"
+                android:textColorHint="#888">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOpenAiModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OpenAI API Key (principal)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOpenAiKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OpenAI API Key (respaldo, opcional)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOpenAiKeyBackup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- GEMINI -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="🟠 Gemini"
+                android:textColor="#FFB066"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Modelo Gemini"
+                android:textColorHint="#888">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etGeminiModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Gemini API Key (principal)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etGeminiKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Gemini API Key (respaldo, opcional)"
+                android:textColorHint="#888"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etGeminiKeyBackup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="#FFF"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btnSaveKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:text="💾 GUARDAR"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"
+                    android:backgroundTint="#198754" />
+                <Button
+                    android:id="@+id/btnSyncKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:text="↻ SYNC DEL RELAY"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"
+                    android:backgroundTint="#0D6EFD" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvSaveKeysStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:textColor="#666"
+                android:textSize="11sp" />
+
+            <!-- Log persistente de errores: sobrevive al modo avión (cuando ADB/WiFi
+                 está caído). El botón muestra los últimos 50 errores en un diálogo. -->
+            <Button
+                android:id="@+id/btnViewErrors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="🔴 VER ERRORES (0)"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:backgroundTint="#6C757D" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="ÚLTIMA FOTO PROCESADA:"
+                android:textColor="#2196F3"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/preview_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="4dp"
+                android:background="#111111"
+                android:scaleType="centerInside" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvResponses"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp"
+                android:background="#050505" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPhotos"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="16dp"
+                android:background="#050505" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+
+    <!-- Overlay Modo Bolsillo -->
+    <FrameLayout
+        android:id="@+id/pocketModeOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="100dp"
+        android:visibility="gone">
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvCountdownOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#CC000000"
+        android:padding="24dp"
+        android:text=""
+        android:textColor="#FFD600"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:elevation="105dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Countdown pequeño del próximo ciclo (próxima foto). Muy discreto en
+         esquina top-right. Lo muestra runSystemCycle durante el delay entre
+         capturas; cuando empieza una captura nueva, se oculta. -->
+    <TextView
+        android:id="@+id/tvNextCycleCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="#99000000"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:text=""
+        android:textColor="#80E0FF"
+        android:textSize="11sp"
+        android:fontFamily="monospace"
+        android:visibility="gone"
+        android:elevation="106dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

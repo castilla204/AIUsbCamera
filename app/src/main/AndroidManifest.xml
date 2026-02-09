@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <!-- Necesario para PhoneStateListener.LISTEN_CALL_STATE (auto-rechazo de
+         llamadas entrantes vía root cuando el sistema está en modo silencio). -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Necesario para colgar llamadas vía service call phone 6 / endCall().
+         Es signature|privileged, así que sólo funciona con root (que es lo
+         nuestro). En APKs sin firmar como ésta, queda concedido al ser
+         root quien ejecuta los comandos shell — el listener solo lee el
+         estado, no llama directamente al servicio. -->
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Concede el permiso USB sin diálogo vía UsbManager.grantPermission().
+         Es signature|privileged: SOLO surte efecto si la app está instalada en
+         /system/priv-app con su whitelist privapp-permissions (módulo Magisk
+         uvc-privapp). Si el módulo no está, grantViaApi() lanza SecurityException
+         y se cae al método de respaldo — la app no se rompe. -->
+    <uses-permission android:name="android.permission.MANAGE_USB"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-feature android:name="android.hardware.usb.host" android:required="true" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication"
+        tools:targetApi="31">
+
+        <!-- ─── Módulo Xposed/LSPosed ───────────────────────────────────────
+             Esta misma app es su propio módulo Xposed. El hook (UsbPermissionHook,
+             listado en assets/xposed_init) se carga en system_server vía LSPosed y
+             auto-concede el permiso USB de la cámara UVC sin diálogo.
+             Activar en LSPosed con ámbito "Android System" (system_server). -->
+        <meta-data android:name="xposedmodule" android:value="true" />
+        <meta-data android:name="xposedminversion" android:value="82" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Auto-concede el permiso USB (UVC) a esta app sin dialogo" />
+
+        <!-- Añadido configChanges para evitar que la app parpadee o se reinicie al cambiar el modo avión -->
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="mcc|mnc|keyboard|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode|orientation"
+            android:directBootAware="true"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- USB_DEVICE_ATTACHED ELIMINADO a propósito:
+                 Ese intent-filter hacía que el sistema mostrara el diálogo
+                 "¿Abrir [app] para gestionar [cámara]?" (UsbConfirmActivity) en
+                 cada conexión, y lanzaba la app visiblemente — ambas cosas malas
+                 para el uso headless/sigiloso.
+                 No hace falta: HeadlessUvcService corre siempre y detecta la
+                 cámara por sondeo (USBMonitor poll ~2s), y el permiso lo concede
+                 el hook Xposed (UsbPermissionHook). Resultado: cámara abierta sin
+                 ningún diálogo ni lanzamiento de UI. -->
+        </activity>
+
+        <service
+            android:name=".HeadlessUvcService"
+            android:enabled="true"
+            android:exported="false"
+            android:directBootAware="true"
+            android:process=":uvc"
+            android:foregroundServiceType="connectedDevice" />
+
+        <!-- BlockAllCallScreeningService: bloquea llamadas entrantes ANTES de RINGING
+             cuando el sistema está activo. Crítico para Samsung S10e — evita que el
+             audio routing de la llamada deje el USB OTG en estado zombie.
+             Se asigna el role CALL_SCREENING vía root al activar el sistema. -->
+        <service
+            android:name=".BlockAllCallScreeningService"
+            android:permission="android.permission.BIND_SCREENING_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

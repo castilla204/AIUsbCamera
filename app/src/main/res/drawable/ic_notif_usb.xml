@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Símbolo USB: línea vertical central -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2 L12,16" />
+    <!-- Rama derecha horizontal -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,8 L17,8 L17,11" />
+    <!-- Rama izquierda horizontal -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,5 L7,5 L7,8" />
+    <!-- Cuadrado derecho (extremo) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,11 H19 V15 H15 V11Z" />
+    <!-- Círculo izquierdo (extremo) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M7,8 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0Z" />
+    <!-- Conector inferior (flecha hacia abajo) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9,16 L12,20 L15,16 Z" />
+</vector>
