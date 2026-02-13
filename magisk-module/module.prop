@@ -1,0 +1,6 @@
+id=uvc_autogrant
+name=UVC Auto-Grant for myapplication
+version=v1.0
+versionCode=1
+author=local
+description=Pre-seeds /data/system/users/0/usb_device_manager.xml so com.example.myapplication never sees the USB permission dialog for UVC cameras (class 14 / IAD class 239 subclass 2). Survives reboots and replug.
