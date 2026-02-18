@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: bolsillo-ia-relay
+    runtime: python
+    plan: free
+    rootDir: render-api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: API_KEY_CLIENTE
+        sync: false
+      - key: EDITOR_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MIMO_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NOVITA_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: TOPAZ_API_KEY
+        sync: false
+      - key: Z_AI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON
+        sync: false
+      - key: APPWRITE_PROJECT_ID
+        sync: false
+      - key: APPWRITE_API_KEY
+        sync: false
+      - key: APPWRITE_DATABASE_ID
+        sync: false
+      - key: APPWRITE_ENDPOINT
+        sync: false
