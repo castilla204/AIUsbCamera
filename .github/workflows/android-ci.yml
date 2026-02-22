@@ -1,0 +1,44 @@
+name: Android CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Write secrets.properties from GitHub Secrets
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          API_KEY_RELAY: ${{ secrets.API_KEY_RELAY }}
+          RELAY_URL_RENDER: ${{ secrets.RELAY_URL_RENDER }}
+          RELAY_URL_RAILWAY: ${{ secrets.RELAY_URL_RAILWAY }}
+        run: |
+          cat > secrets.properties <<EOF
+          GEMINI_API_KEY=${GEMINI_API_KEY}
+          ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+          OPENAI_API_KEY=${OPENAI_API_KEY}
+          API_KEY_RELAY=${API_KEY_RELAY}
+          RELAY_URL_RENDER=${RELAY_URL_RENDER}
+          RELAY_URL_RAILWAY=${RELAY_URL_RAILWAY}
+          EOF
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Assemble debug
+        run: ./gradlew :app:assembleDebug --no-daemon
